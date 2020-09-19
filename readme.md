@@ -1,6 +1,6 @@
 # Readme
 
-##Some steps for install and run
+## Some steps for install and run
 
 #### install Homebrew 
 http://brew.sh/
