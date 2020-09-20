@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { v4 as uuid } from 'uuid';
 import { CreateTasksDTO } from './dto/createTasksDTO';
 import { GetTaskFilterDTO } from './dto/getTasksFiltersDTO';
 import { Task } from './task.entity';
@@ -16,18 +15,8 @@ export class TasksService {
     ) {  
 
     }
-
-    getAllTasks() {
-    }
-
     async createTask(createTasksDTO: CreateTasksDTO) : Promise<Task> {
-        const {title, desc} = createTasksDTO;
-        const task = new Task();
-        task.desc = desc;
-        task.title = title;
-        task.status = TaskStatus.OPEN;
-        await task.save();
-        return task;
+        return this.taskRepository.createTask(createTasksDTO);
     }
 
     //JS is a single thread language, so we have to use a lot of async await wait to achieve high avaliability 
@@ -39,15 +28,21 @@ export class TasksService {
         return found;
     }
 
-    getTasksWithFilters(filterDTO : GetTaskFilterDTO) {
-       
+    async getTasks(filterDTO : GetTaskFilterDTO) : Promise<Task[]> {
+        return this.taskRepository.getTasks(filterDTO);
     }
 
-    deleteById(id : string) :void {
-
+    async deleteById(id : number) : Promise<void> {
+        const res = await this.taskRepository.delete(id);
+        if (res.affected === 0) {
+            throw new NotFoundException(`Task with ID "${id}" not found`);
+        }
     }
 
-    updateTaskStatus(id: string, status: TaskStatus) {
-
+    async updateTaskStatus(id: number, status: TaskStatus) : Promise<Task>{
+        const task = await this.getTaskById(id);  
+        task.status = status;
+        await task.save();  
+        return task;
     }
 }

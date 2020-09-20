@@ -15,10 +15,7 @@ export class TasksController {
     //http://localhost:3000/tasks/?status=DONE&search=XXX
     @Get()
     getTasks(@Query(ValidationPipe) filterDTO : GetTaskFilterDTO) {
-        if (Object.keys(filterDTO).length) {
-            //return this.tasksService.getTasksWithFilters(filterDTO);
-        }
-        //return this.tasksService.getAllTasks();
+        return this.tasksService.getTasks(filterDTO);
     }
     /** 
     @Post()
@@ -40,12 +37,12 @@ export class TasksController {
     }
 
     @Delete('/:id')
-    deleteById(@Param('id') id : string) {
+    deleteById(@Param('id', ParseIntPipe) id : number) : Promise<void>{
         return this.tasksService.deleteById(id);
     }
 
     @Patch('/:id/status')
-    updateTaskStatus(@Param('id') id : string, @Body('status', TaskStatusValdiationPipe) status : TaskStatus) {
+    updateTaskStatus(@Param('id', ParseIntPipe) id : number, @Body('status', TaskStatusValdiationPipe) status : TaskStatus) :  Promise<Task> {
         return this.tasksService.updateTaskStatus(id, status);
     }
 
