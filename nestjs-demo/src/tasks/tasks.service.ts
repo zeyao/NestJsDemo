@@ -1,62 +1,53 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Task, TaskStatus } from './task.model';
 import { v4 as uuid } from 'uuid';
 import { CreateTasksDTO } from './dto/createTasksDTO';
 import { GetTaskFilterDTO } from './dto/getTasksFiltersDTO';
+import { Task } from './task.entity';
+import { TaskStatus } from './task-status.enum';
+import { TaskRepository } from './task.repository';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class TasksService {
-    private tasks : Task[]= [];
 
-    getAllTasks() : Task[] {
-        return this.tasks;
+    constructor(
+        @InjectRepository(TaskRepository)
+        private taskRepository : TaskRepository,
+    ) {  
+
     }
-    //npm install --save uuid
-    //yarn add uuid
-    createTask(createTasksDTO: CreateTasksDTO) : Task {
+
+    getAllTasks() {
+    }
+
+    async createTask(createTasksDTO: CreateTasksDTO) : Promise<Task> {
         const {title, desc} = createTasksDTO;
-        const t : Task = {
-            id : uuid(),
-            title,
-            desc,
-            status: TaskStatus.OPEN,
-        }
-        this.tasks.push(t);
-        return t;
+        const task = new Task();
+        task.desc = desc;
+        task.title = title;
+        task.status = TaskStatus.OPEN;
+        await task.save();
+        return task;
     }
 
-    getTaskById(id: string) : Task {
-        const found = this.tasks.find(task => task.id === id);
+    //JS is a single thread language, so we have to use a lot of async await wait to achieve high avaliability 
+    async getTaskById(id: number) : Promise<Task> {
+        const found = await this.taskRepository.findOne(id);
         if (!found) {
-            throw new NotFoundException(`Task with "${id}" not found`);
+            throw new NotFoundException(`Task with ID "${id}" not found`);
         }
         return found;
     }
 
-    getTasksWithFilters(filterDTO : GetTaskFilterDTO) : Task[] {
-        const {status, search} = filterDTO;
-        let tasks = this.getAllTasks();
-        if (status) {
-            tasks = tasks.filter(t => t.status === status);
-        }
-        if (search) {
-            tasks = tasks.filter(t => 
-                t.title.includes(search) ||
-                t.desc.includes(search),
-            );
-        }
-        return tasks;
+    getTasksWithFilters(filterDTO : GetTaskFilterDTO) {
+       
     }
 
     deleteById(id : string) :void {
-        const found = this.getTaskById(id);
-        //if not found we will throw exception
-        this.tasks = this.tasks.filter(t => t.id !== id);
+
     }
 
-    updateTaskStatus(id: string, status: TaskStatus) : Task {
-        const task = this.getTaskById(id);
-        task.status = status;
-        return task;
+    updateTaskStatus(id: string, status: TaskStatus) {
+
     }
 }
