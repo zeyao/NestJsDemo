@@ -45,7 +45,12 @@ https://yarn.bootcss.com/docs/install/#mac-stable
   - nest g controller tasks --no-spec
   - nest g service tasks --no-spec
 
-- import uuid :
+
+#### add dependency
+
+- import uuid dependency :
 
   - npm install uuid
   - yarn add uuid
+
+- add typeORM : yarn add @nestjs/typeorm typeorm pg
