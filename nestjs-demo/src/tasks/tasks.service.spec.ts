@@ -3,9 +3,11 @@ import { TasksService } from './tasks.service';
 import { TaskRepository } from './task.repository';
 import { GetTaskFilterDTO } from './dto/getTasksFiltersDTO';
 import { TaskStatus } from './task-status.enum';
+import { async } from 'rxjs';
 
 const mockTaskRepo = () => ({
     getTasks : jest.fn(),
+    findOne : jest.fn(),
     // mock the method async getTasks(filterDTO : GetTaskFilterDTO) : Promise<Task[]>{
 });
 //use the mock;
@@ -37,5 +39,21 @@ describe('TaskService', () =>  {
             expect(result).toEqual('return val');
 
         })
+    });
+
+    describe('getTaskById', () => {
+        it(`calls tasks sucess`, async() => {
+            const mockTask = { title: 'test title', desc: `desc` };
+            taskRepository.findOne.mockResolvedValue(mockTask);
+            const result = await tasksService.getTaskById(1);
+            expect(result).toEqual(mockTask);
+            expect(taskRepository.findOne).toHaveBeenCalledWith(1);
+        });
+
+        it(`calls failed`, async() => {
+            taskRepository.findOne.mockResolvedValue(null);
+            expect(tasksService.getTaskById(1)).rejects.toThrow();
+        });
+   
     });
 });
