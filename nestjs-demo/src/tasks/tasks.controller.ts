@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, ValidationPipe, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, ValidationPipe, ParseIntPipe, Logger } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTasksDTO } from './dto/createTasksDTO';
 import { GetTaskFilterDTO } from './dto/getTasksFiltersDTO';
@@ -9,6 +9,8 @@ import { TaskStatus } from './task-status.enum';
 @Controller('tasks')
 export class TasksController {
     
+    private logger = new Logger('TasksController');
+
     constructor(private tasksService: TasksService) {       
     }
 
@@ -27,7 +29,7 @@ export class TasksController {
     @Post()
     @UsePipes(ValidationPipe)
     createTask(@Body() createTasksDTO: CreateTasksDTO)  {
-        console.log(createTasksDTO.title);
+        this.logger.log(`User start to create task : ${JSON.stringify(createTasksDTO)} `);
         return this.tasksService.createTask(createTasksDTO);
     }
 
