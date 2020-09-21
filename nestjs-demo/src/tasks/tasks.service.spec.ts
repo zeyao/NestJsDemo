@@ -3,7 +3,7 @@ import { TasksService } from './tasks.service';
 import { TaskRepository } from './task.repository';
 import { GetTaskFilterDTO } from './dto/getTasksFiltersDTO';
 import { TaskStatus } from './task-status.enum';
-import { async } from 'rxjs';
+import { NotFoundException } from '@nestjs/common';
 
 const mockTaskRepo = () => ({
     getTasks : jest.fn(),
@@ -52,7 +52,7 @@ describe('TaskService', () =>  {
 
         it(`calls failed`, async() => {
             taskRepository.findOne.mockResolvedValue(null);
-            expect(tasksService.getTaskById(1)).rejects.toThrow();
+            expect(tasksService.getTaskById(1)).rejects.toThrow(NotFoundException);
         });
    
     });
