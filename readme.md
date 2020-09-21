@@ -54,3 +54,11 @@ https://yarn.bootcss.com/docs/install/#mac-stable
   - yarn add uuid
 
 - add typeORM : yarn add @nestjs/typeorm typeorm pg
+
+
+#### testing frmk - Jest
+
+- https://jestjs.io/docs/en/getting-started
+- yarn add --dev jest
+- yarn global add jest
+- Run command : yarn test
