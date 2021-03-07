@@ -62,3 +62,13 @@ https://yarn.bootcss.com/docs/install/#mac-stable
 - yarn add --dev jest
 - yarn global add jest
 - Run command : yarn test
+
+
+
+#### Running docker mode
+
+- postgres db is setup at folder db
+- to start db go to db folder, run `docker-compose.yaml`
+- db post is 5555
+
+- start app at docker mode run `docker-compose up` under root folder
