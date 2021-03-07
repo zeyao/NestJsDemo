@@ -1,0 +1,11 @@
+services:
+  nestjs-demo:
+    image: nestjs-demo-1
+    build: 
+      context: ./
+      dockerfile: ./demo.Dockerfile
+    container_name: nestjs-demo
+    ports:
+      - '8040:8040'
+    environment:
+      - DB_HOST=host.docker.internal
